@@ -1,9 +1,13 @@
-#!/bin/python
+#!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
 import sys
 from subprocess import check_output
 import argparse
+
+TTY_CSI = '\x1b['
+TTY_RESET = '\x1b[0m'
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -26,21 +30,21 @@ def main():
         if args.verbose:
             print '%s: %d' % (filename, line_num)
 
-    log_with_color("Total line number: %d" % total_line_num)
+    total_summary = "Total line number: %d" % total_line_num
+    if args.verbose:
+        log_with_color('-' * len(total_summary))
+    log_with_color(total_summary)
 
-TTY_CSI = '\x1b['
-TTY_RESET = '\x1b[0m'
 
 def log_with_color(string):
     isatty =  getattr(sys.stdout, 'isatty', None)
+
     if isatty and isatty():
         new_string = ''.join([TTY_CSI, ';32m', string, TTY_RESET])
     else:
         new_string = string
 
     print new_string
-
-
 
 
 if __name__ == "__main__":
