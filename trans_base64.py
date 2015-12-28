@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-# print base64.decodestring("u7bTrcq508PQwrDmx+W7qrTz0ae159fT08q8/s+1zbOhow==").decode('gbk')
-# 欢迎使用新版清华大学电子邮件系统。
-
 import base64
 import cStringIO
 import re
