@@ -22,8 +22,12 @@ def main():
     total_line_num = 0
     for line in out.strip().split('\n'):
         filename = line.replace('\t', ' ').rsplit(' ', 1)[-1]
-
-        line_num_out = check_output(["wc", "-l", filename])
+        try:
+            line_num_out = check_output(["wc", "-l", filename])
+        except Exception as e:
+            # Maybe submodule!
+            print "wc -l {} failed, ignore it".format(filename)
+            continue
         line_num = int(line_num_out.strip().split(' ', 1)[0])
 
         total_line_num += line_num
