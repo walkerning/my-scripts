@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import sys
 import os
@@ -49,21 +50,26 @@ def main():
         action='store_const', const=True, default=False,
     )
 
+    parser.add_argument(
+        '-i', '--inplace',
+        action='store_true',
+        help='inplace modification, indicates: `TRANSLATE_TO == TRANSLATE_FROM`'
+    )
     args = parser.parse_args()
 
     # get the content to be translated
     if not args.string_mode:
         if args.detect_from is not None:
             if not judge_isfile(args.detect_from):
-                print "Error: detect_from文件 '%s' 不存在. Abort!" % args.detect_from
+                print("Error: detect_from文件 '%s' 不存在. Abort!" % args.detect_from)
                 sys.exit(errno.ENOENT)
         else:
             args.detect_from = args.translate_from
         if not judge_isfile(args.translate_from):
-            print "Error: translate_from文件 '%s' 不存在. Abort!" % args.translate_from
+            print("Error: translate_from文件 '%s' 不存在. Abort!" % args.translate_from)
             sys.exit(errno.ENOENT)
-        translate_from_string = open(args.translate_from, 'r').read()
-        detect_from_string = open(args.detect_from, 'r').read()
+        translate_from_string = open(args.translate_from, 'rb').read()
+        detect_from_string = open(args.detect_from, 'rb').read()
     else:
         translate_from_string = args.translate_from
         detect_from_string = args.detect_from or args.translate_from
@@ -87,12 +93,14 @@ def main():
             if confirm_code == NO_CONFIRM:
                 sys.exit(255)
 
+    if args.inplace:
+        args.translate_to = args.translate_from
     # Start translating
-    print ("OK! Start translating, using decoding-from=%s, to encoding-to=%s\n"
+    print("OK! Start translating, using decoding-from=%s, to encoding-to=%s\n"
            "----------------------------------------------------------------"
-           % (decoding_codec, args.encoding_to))
-    open(args.translate_to, 'w').write(translate_from_string.decode(decoding_codec).encode(args.encoding_to))
-    print "----------------------------------------------------------------\nFinish!"
+          % (decoding_codec, args.encoding_to))
+    open(args.translate_to, 'wb').write(translate_from_string.decode(decoding_codec).encode(args.encoding_to))
+    print("----------------------------------------------------------------\nFinish!")
 
 
 
